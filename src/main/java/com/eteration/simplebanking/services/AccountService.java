@@ -19,10 +19,10 @@ public class AccountService {
     public AccountService(IAccountRepository accountRepository) {
         this.accountRepository = accountRepository;
     }
-    public Account findAccount(String accountNumber) {
-        return accountRepository.findByAccountNumber(accountNumber)
-                .orElseThrow(() -> new InsufficientBalanceException(ErrorType.USER_NOT_FOUND));
+    public Account findAccount(String accountNumber){
+        return accountRepository.findByAccountNumber(accountNumber);
     }
+
     public void save(Account account){
         accountRepository.save(account);
     }
