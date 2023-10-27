@@ -8,6 +8,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 
 public class Account {
 
@@ -26,8 +28,8 @@ public class Account {
     @Column(unique = true)
     private String accountNumber;
     private double balance;
-
-    private LocalDate createDate;
+    @Builder.Default
+    private LocalDate createDate= LocalDate.now();
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<Transaction> transactions = new ArrayList<>();

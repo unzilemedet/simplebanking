@@ -1,5 +1,8 @@
 package com.eteration.simplebanking.controller;
 
+import com.eteration.simplebanking.dto.request.CreateAccountRequestDto;
+import com.eteration.simplebanking.dto.response.FindAccountResponseDto;
+import com.eteration.simplebanking.mapper.IMapper;
 import com.eteration.simplebanking.model.Account;
 import com.eteration.simplebanking.model.DepositTransaction;
 import com.eteration.simplebanking.model.InsufficientBalanceException;
@@ -18,20 +21,27 @@ public class AccountController {
 
     private final AccountService accountService;
 
+    @PostMapping("/create-account")
+    public ResponseEntity<Account> createAccount(@RequestBody CreateAccountRequestDto dto){
 
+        return ResponseEntity.ok(accountService.createAccount(dto));
+    }
 
+    @GetMapping("/account-info/{accountNumber}")
+    public ResponseEntity<FindAccountResponseDto> getAccountInfo(@PathVariable("accountNumber") String accountNumber) {
+        return new ResponseEntity<>(accountService.findAccountInfo(accountNumber), HttpStatus.OK);
+    }
     @GetMapping("/account/{accountNumber}")
     public ResponseEntity<Account> getAccount(@PathVariable("accountNumber") String accountNumber) {
         return new ResponseEntity<>(accountService.findAccount(accountNumber), HttpStatus.OK);
     }
-
     @PostMapping("/credit/{accountNumber}")
     public ResponseEntity<TransactionStatus> credit(@PathVariable("accountNumber") String accountNumber, @RequestBody DepositTransaction transaction
     ) throws InsufficientBalanceException {
 
         Account account = accountService.findAccount(accountNumber);
         account.post(transaction);
-        accountService.save(account);
+        accountService.saveAccount(account);
         String approvalCode = transaction.getApprovalCode().toString();
         return new ResponseEntity<>(new TransactionStatus("OK", approvalCode), HttpStatus.OK);
     }
@@ -43,7 +53,7 @@ public class AccountController {
 
         Account account = accountService.findAccount(accountNumber);
         account.post(transaction);
-        accountService.save(account);
+        accountService.saveAccount(account);
         String approvalCode = transaction.getApprovalCode().toString();
         return new ResponseEntity<>(new TransactionStatus("OK",approvalCode), HttpStatus.OK);
     }
