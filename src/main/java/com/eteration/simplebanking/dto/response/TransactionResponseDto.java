@@ -13,6 +13,6 @@ import lombok.NoArgsConstructor;
 public class TransactionResponseDto {
     private String date;
     private Double amount;
-
+    private String type;
     private String approvalCode;
 }

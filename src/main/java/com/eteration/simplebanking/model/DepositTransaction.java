@@ -5,18 +5,20 @@ import javax.persistence.Entity;
 
 // This class is a place holder you can change the complete implementation
 @Entity
-public class DepositTransaction  extends Transaction{
-    private final String type = "DepositTransaction";
+public class DepositTransaction extends Transaction {
 
     public DepositTransaction() {
-        super(0);
+        super(0, TransactionConstant.DEPOSIT_TRANSACTION);
     }
 
     public DepositTransaction(double amount) {
-        super(amount);
+        super(amount, TransactionConstant.DEPOSIT_TRANSACTION);
     }
 
-    public String getType() {
-        return type;
+    @Override
+    public void post(Account account) {
+        account.deposit(this.getAmount());
+        this.setAccount(account);
     }
+
 }

@@ -5,10 +5,9 @@ package com.eteration.simplebanking.model;
 
 import com.eteration.simplebanking.exception.ErrorType;
 import lombok.*;
-
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,22 +17,20 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-
-public class Account {
+public class Account implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String owner;
-    @Column(unique = true)
+    @Column(unique = true, name = "account_number")
     private String accountNumber;
     private double balance;
     @Builder.Default
-    private LocalDate createDate= LocalDate.now();
+    private LocalDate createDate = LocalDate.now();
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "account", fetch = FetchType.EAGER)
     private List<Transaction> transactions = new ArrayList<>();
-
 
 
     public Account(String owner, String accountNumber) {
@@ -41,21 +38,23 @@ public class Account {
         this.accountNumber = accountNumber;
     }
 
-    public void withdraw(double amount) throws InsufficientBalanceException {
-        if(amount > this.balance){
+    public void withdraw(double amount) {
+        if (amount > this.balance) {
             throw new InsufficientBalanceException(ErrorType.INSUFFICIENT_CURRENCY);
         }
         this.balance -= amount;
     }
+
     public void deposit(double amount) {
         this.balance += amount;
     }
+
     public void post(Transaction transaction) throws InsufficientBalanceException {
-        if(transaction instanceof DepositTransaction){
+        if (transaction instanceof DepositTransaction) {
             DepositTransaction dt = (DepositTransaction) transaction;
             this.deposit(dt.getAmount());
         }
-        if(transaction instanceof WithdrawalTransaction){
+        if (transaction instanceof WithdrawalTransaction) {
             WithdrawalTransaction wt = (WithdrawalTransaction) transaction;
             this.withdraw(wt.getAmount());
         }

@@ -1,17 +1,13 @@
 package com.eteration.simplebanking.exception;
 
 import com.eteration.simplebanking.controller.TransactionStatus;
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,8 +21,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<TransactionStatus> handleCustomException(com.eteration.simplebanking.model.InsufficientBalanceException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new TransactionStatus("ERROR - InsufficientBalance", "none"));
     }
-    @ExceptionHandler(InsufficientBalanceException.class)
-    public ResponseEntity<ErrorMessage> handleManagerException(InsufficientBalanceException ex){
+    @ExceptionHandler(CustomGenericException.class)
+    public ResponseEntity<ErrorMessage> handleManagerException(CustomGenericException ex){
         ErrorType errorType=ex.getErrorType();
         HttpStatus httpStatus=errorType.httpStatus;
         return new ResponseEntity<>(createError(errorType,ex),httpStatus);

@@ -6,7 +6,7 @@ import lombok.Getter;
 
 // This class is a place holder you can change the complete implementation
 @Getter
-public class InsufficientBalanceException extends Exception {
+public class InsufficientBalanceException extends RuntimeException {
     private final ErrorType errorType;
 
     public InsufficientBalanceException(ErrorType errorType){
